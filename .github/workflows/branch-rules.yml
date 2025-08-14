@@ -1,0 +1,76 @@
+# 分支保护配置
+name: Branch Protection Rules
+
+on:
+  push:
+    branches: [ main, develop, content ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  validate-content:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/content' || contains(github.head_ref, 'content')
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Validate Content
+        run: |
+          echo "检查文章格式..."
+          find content/posts -type f -name "*.md" -exec sh -c '
+            for file do
+              if ! grep -q "^---$" "$file"; then
+                echo "错误: $file 缺少前置元数据"
+                exit 1
+              fi
+              if ! grep -q "^title:" "$file"; then
+                echo "错误: $file 缺少标题"
+                exit 1
+              fi
+              if ! grep -q "^date:" "$file"; then
+                echo "错误: $file 缺少日期"
+                exit 1
+              fi
+            done
+          ' sh {} +
+
+  validate-develop:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop' || contains(github.head_ref, 'develop')
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+      
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      - name: Build Test
+        run: hugo --minify
+
+  protect-main:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || contains(github.base_ref, 'main')
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check PR Labels
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: labels } = await github.rest.issues.listLabelsOnIssue({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            const requiredLabel = ['reviewed', 'ready'];
+            const hasRequired = labels.some(label => 
+              requiredLabel.includes(label.name.toLowerCase())
+            );
+            if (!hasRequired) {
+              core.setFailed('PR needs either "reviewed" or "ready" label');
+            }
