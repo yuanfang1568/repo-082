@@ -1,0 +1,52 @@
+/* 自定义样式 */
+
+/* 调整字体 */
+:root {
+    --sys-font-family: -apple-system, BlinkMacSystemFont, "Noto Serif SC", "Segoe UI", "Droid Sans", "Helvetica Neue", sans-serif;
+    --zh-font-family: "Noto Serif SC", "SimSun", "宋体", serif;
+    --base-font-family: var(--sys-font-family);
+    --code-font-family: Consolas, Monaco, 'Courier New', monospace;
+}
+
+/* 优化文章内容样式 */
+.post-content {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--content-color);
+}
+
+/* 优化代码块样式 */
+.highlight pre {
+    padding: 1rem;
+    border-radius: 5px;
+    margin: 1.5rem 0;
+}
+
+/* 优化引用样式 */
+blockquote {
+    border-left: 4px solid var(--primary-color);
+    padding: 0.5rem 1rem;
+    background: var(--quote-bg);
+    margin: 1.5rem 0;
+}
+
+/* 优化表格样式 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+}
+
+th, td {
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+}
+
+/* 响应式图片 */
+.post-content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5rem auto;
+    border-radius: 5px;
+}

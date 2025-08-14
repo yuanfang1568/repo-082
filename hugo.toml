@@ -25,6 +25,22 @@ imageUrl = "/images/profile.jpg"
 [params.SEO]
 keywords = ["博客", "技术", "生活"]
 
+# 评论系统配置
+[params.comments]
+enabled = true
+provider = "giscus"
+
+[params.giscus]
+repo = "yuanfang1568/repo-082"
+repoId = "R_kgDOKWXXXX"  # 请替换为您的仓库 ID
+category = "Comments"
+categoryId = "DIC_kwDOKWXXXX"  # 请替换为您的分类 ID
+mapping = "pathname"
+reactionsEnabled = "1"
+emitMetadata = "0"
+inputPosition = "bottom"
+lang = "zh-CN"
+
 # 导航菜单
 [[menu.main]]
 identifier = "posts"

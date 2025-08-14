@@ -47,3 +47,7 @@ hugo new content posts/新文章.md
 ## 许可证
 
 MIT
+=======
+# repo-082
+Auto-generated repository
+>>>>>>> 8224d1496fe7a2ea82cb1d2788cd751d69582193
