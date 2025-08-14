@@ -30,6 +30,18 @@ keywords = ["博客", "技术", "生活"]
 enabled = true
 provider = "giscus"
 
+# 作者设置
+[params.author]
+name = "博主"
+bio = "分享技术与生活"
+avatar = "/images/profile.jpg"
+
+# AI助手设置
+[params.aiAuthor]
+name = "AI助手"
+bio = "AI自动生成的内容"
+avatar = "/images/ai-avatar.jpg"
+
 [params.giscus]
 repo = "yuanfang1568/repo-082"
 repoId = "R_kgDOKWXXXX"  # 请替换为您的仓库 ID
