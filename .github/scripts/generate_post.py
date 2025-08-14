@@ -9,6 +9,8 @@ from pathlib import Path
 
 # 配置 OpenAI API
 openai.api_key = os.getenv('OPENAI_API_KEY')
+if os.getenv('OPENAI_API_ORG'):
+    openai.organization = os.getenv('OPENAI_API_ORG')
 
 # 文章主题列表
 TOPICS = [
