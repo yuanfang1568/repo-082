@@ -12,23 +12,36 @@ openai.api_key = os.getenv('OPENAI_API_KEY')
 if os.getenv('OPENAI_API_ORG'):
     openai.organization = os.getenv('OPENAI_API_ORG')
 
-# 文章主题列表
-TOPICS = [
-    "技术趋势",
-    "编程技巧",
-    "开发工具",
-    "最佳实践",
-    "个人成长",
-    "技术评测",
-    "学习方法",
-    "效率提升"
-]
+# 文章主题和分类映射
+TOPICS = {
+    "技术趋势": {
+        "topics": ["AI发展趋势", "云原生技术", "Web3.0", "元宇宙", "边缘计算"],
+        "category": "技术前沿"
+    },
+    "编程语言": {
+        "topics": ["Python进阶", "Go语言实践", "Rust入门", "JavaScript新特性", "TypeScript最佳实践"],
+        "category": "编程语言"
+    },
+    "后端开发": {
+        "topics": ["微服务架构", "分布式系统", "数据库优化", "消息队列", "API设计"],
+        "category": "后端开发"
+    },
+    "前端开发": {
+        "topics": ["React Hooks", "Vue3组件", "前端性能优化", "移动端适配", "现代CSS技巧"],
+        "category": "前端开发"
+    },
+    "DevOps": {
+        "topics": ["容器化部署", "CI/CD实践", "监控告警", "日志管理", "安全最佳实践"],
+        "category": "DevOps"
+    }
+}
 
 def generate_post_topic():
     """生成文章主题和大纲"""
-    topic = random.choice(TOPICS)
+    category = random.choice(list(TOPICS.keys()))
+    topic = random.choice(TOPICS[category]["topics"])
     prompt = f"""
-    请为技术博客生成一篇关于{topic}的文章大纲，要求：
+    请为技术博客生成一篇关于{topic}的高质量文章大纲，要求：
     1. 文章标题要具体且吸引人
     2. 包含 3-5 个主要部分
     3. 每个部分都要有 2-3 个子要点
@@ -64,7 +77,7 @@ def generate_post_content(outline):
     
     return response.choices[0].message.content
 
-def create_post_file(title, content):
+def create_post_file(title, content, category):
     """创建文章文件"""
     now = datetime.now()
     slug = slugify(title)
@@ -75,11 +88,12 @@ def create_post_file(title, content):
         title=title,
         date=now.strftime('%Y-%m-%d'),
         draft=False,
-        tags=["AI生成", "技术博客"],
-        categories=["技术"],
+        tags=["AI生成", category, "热门文章"],
+        categories=[category],
         author="AI助手",
         featuredImage="",
-        toc=True
+        toc=True,
+        weight=random.randint(1, 100)  # 用于排序
     )
     
     posts_dir = Path('content/posts')
@@ -89,14 +103,34 @@ def create_post_file(title, content):
         f.write(frontmatter.dumps(post))
 
 def main():
-    # 生成文章主题和大纲
-    post_data = generate_post_topic()
+    # 设置要生成的文章数量
+    num_posts = 20
     
-    # 生成文章内容
-    content = generate_post_content(post_data)
+    # 记录已生成的主题，避免重复
+    generated_topics = set()
     
-    # 创建文章文件
-    create_post_file(post_data['title'], content)
+    for _ in range(num_posts):
+        # 生成文章主题和大纲
+        post_data = None
+        category = None
+        
+        # 确保主题不重复
+        while True:
+            category = random.choice(list(TOPICS.keys()))
+            post_data = generate_post_topic()
+            if post_data['title'] not in generated_topics:
+                generated_topics.add(post_data['title'])
+                break
+        
+        # 生成文章内容
+        content = generate_post_content(post_data)
+        
+        # 创建文章文件
+        create_post_file(post_data['title'], content, TOPICS[category]['category'])
+        
+        # 等待一小段时间，避免API限制
+        time.sleep(1)
 
 if __name__ == '__main__':
+    import time
     main()

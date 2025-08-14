@@ -1,8 +1,15 @@
-name: AI Auto Post
+name: AI Batch Post Generation
 
 on:
   schedule:
-    - cron: '0 2 * * *'  # 每天凌晨2点运行
+    - cron: '0 */12 * * *'  # 每12小时运行一次
+  workflow_dispatch:
+    inputs:
+      post_count:
+        description: '要生成的文章数量'
+        required: true
+        default: '20'
+        type: number
   workflow_dispatch:      # 允许手动触发
 
 env:
