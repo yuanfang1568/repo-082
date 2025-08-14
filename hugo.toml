@@ -1,6 +1,9 @@
 baseURL = 'https://yuanfang1568.github.io/repo-082/'
 languageCode = 'zh-cn'
 title = '我的个人博客'
+enableGitInfo = true
+hasCJKLanguage = true
+paginate = 10
 theme = 'PaperMod'
 
 # 主题配置

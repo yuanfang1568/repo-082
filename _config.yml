@@ -1,0 +1,5 @@
+title: GitHub Pages
+description: GitHub Pages 配置文件
+remote_theme: pages-themes/cayman@v0.2.0
+plugins:
+  - jekyll-remote-theme
