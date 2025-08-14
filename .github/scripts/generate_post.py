@@ -102,9 +102,9 @@ def create_post_file(title, content, category):
     with open(posts_dir / filename, 'w', encoding='utf-8') as f:
         f.write(frontmatter.dumps(post))
 
-def main():
+def main(num_posts=20):
     # 设置要生成的文章数量
-    num_posts = 20
+    num_posts = int(num_posts)
     
     # 记录已生成的主题，避免重复
     generated_topics = set()
@@ -133,4 +133,6 @@ def main():
 
 if __name__ == '__main__':
     import time
-    main()
+    import sys
+    num_posts = sys.argv[1] if len(sys.argv) > 1 else 20
+    main(num_posts)

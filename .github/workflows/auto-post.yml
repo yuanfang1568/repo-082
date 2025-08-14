@@ -8,7 +8,7 @@ on:
       post_count:
         description: '要生成的文章数量'
         required: true
-        default: '20'
+        default: 20
         type: number
   workflow_dispatch:      # 允许手动触发
 
@@ -36,7 +36,11 @@ jobs:
           pip install openai python-frontmatter python-slugify
 
       - name: Generate post
-        run: python .github/scripts/generate_post.py
+        env:
+          POST_COUNT: ${{ github.event.inputs.post_count || '20' }}
+        run: |
+          echo "Generating ${POST_COUNT} posts..."
+          python .github/scripts/generate_post.py ${POST_COUNT}
 
       - name: Set up Hugo
         uses: peaceiris/actions-hugo@v2
