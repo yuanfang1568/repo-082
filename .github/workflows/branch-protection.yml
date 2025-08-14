@@ -1,0 +1,47 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main, develop, content, feature ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: 'latest'
+          extended: true
+
+      - name: Validate Hugo Build
+        run: hugo --minify
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Check Markdown files
+        uses: DavidAnson/markdownlint-cli2-action@v9
+        with:
+          globs: "content/**/*.md"
+
+  review:
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: PR Title Checker
+        uses: thehanimo/pr-title-checker@v1.3.7
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          pass_on_octokit_error: false
+          configuration_path: .github/pr-title-checker-config.json

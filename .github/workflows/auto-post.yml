@@ -48,9 +48,29 @@ jobs:
           hugo-version: 'latest'
           extended: true
 
-      - name: Commit and push if changed
+      - name: Commit and push to content branch
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
+          git checkout content
           git add content/posts/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto generated post $(date +'%Y-%m-%d')" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "content: 自动生成文章 $(date +'%Y-%m-%d')" && git push origin content)
+          
+      - name: Create Pull Request
+        if: success()
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "content: 合并自动生成的文章"
+          branch: content
+          base: main
+          title: "content: 添加新的自动生成文章"
+          body: |
+            自动生成的文章已准备就绪，请检查内容质量。
+            
+            ## 更新内容
+            - 添加新的自动生成文章
+            - 按主题自动分类
+            - 自动添加标签和权重
+            
+            请检查文章内容是否符合要求。
